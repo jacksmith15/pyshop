@@ -1,11 +1,11 @@
-from python:2
+from python:2.7.14
 
 # This image is intend to be used to test/develop
 # pyshop in docker containers for mysql and postgresql
 MAINTAINER Guillaume Gauvrit <guillaume@gauvr.it>
 
 RUN apt-get update
-RUN apt-get install -y python-dev libmysqlclient-dev libpq-dev git
+RUN apt-get install -y gcc python-dev libmysqlclient-dev libpq-dev git
 
 RUN pip install git+https://github.com/mardiros/pyramid_xmlrpc.git
 RUN pip install waitress mysql-python psycopg2
