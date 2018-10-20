@@ -31,7 +31,7 @@ pgpyshop:
   user: docker
   command: pserve development.pg.ini --reload
   ports:
-    - 8090:6543
+    - 8080:6543
   volumes:
     - .:/srv/pyshop
   links:
