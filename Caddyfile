@@ -1,9 +1,3 @@
-localhost
-
-push
-browse
-websocket /echo cat
-ext    .html
-log    /var/log/access.log
-proxy  / http://pgpyshop:6543
-header / Access-Control-Allow-Origin *
+localhost.dev {
+    proxy / http://pgpyshop:6543/
+}

@@ -1,67 +1,34 @@
-version: '3.2'
-services:
-  pyshop:
-    build: .
-    user: docker
-    command: pserve development.ini --reload
-    ports:
-      - 6543:6543
-    volumes:
-      - .:/srv/pyshop
-
-  mypyshop:
-    build: .
-    # user: docker
-    command: pserve development.mysql.ini --reload
-    ports:
-      - 6543:6543
-    volumes:
-      - .:/srv/pyshop
-    links:
-      - mysql:mysql.localdomain
-
-  mysql:
-    image: mysql:5.6
-    environment:
-      MYSQL_ROOT_PASSWORD: pwd
-    ports:
-      - 3306:3306
+pgpyshop:
+  build: .
+  user: docker
+  command: pserve development.pg.ini --reload
+  ports:
+    - 8090:6543
+  volumes:
+    - .:/srv/pyshop
+  links:
+    - postgresql:postgresql.localdomain
+  environment:
+    PYSHOP_CONFIG_URI: development.pg.ini
 
 
-  pgpyshop:
-    build: .
-    user: docker
-    command: pserve development.pg.ini --reload
-    ports:
-      - 8090:6543
-    volumes:
-      - .:/srv/pyshop
-    links:
-      - postgresql:postgresql.localdomain
-    # depends_on:
-    #   - caddy
-    environment:
-      PYSHOP_CONFIG_URI: development.pg.ini
+postgresql:
+  image: postgres:9.4
+  ports:
+    - 5432:5432
 
 
-  postgresql:
-    image: postgres:9.4
-    ports:
-      - 5432:5432
-
-
-  # caddy:
-  #   image: abiosoft/caddy
-  #   ports:
-  #     - 80:80
-  #     - 443:443
-  #   volumes:
-  #     - type: bind
-  #       source: ./Caddyfile
-  #       target: /etc/Caddyfile
-  #     - type: bind
-  #       source: ../.caddy
-  #       target: /etc/caddycerts
-  #   environment:
-  #     CADDYPATH: /etc/caddycerts
-  #     ACME_AGREE: 'true'
+caddy:
+  image: abiosoft/caddy:no-stats
+  ports:
+    - 80:80
+    - 8080:2015
+    - 443:443
+  links:
+    - pgpyshop:pgpyshop
+  volumes:
+    - ./Caddyfile:/etc/Caddyfile
+    - ../.caddy:/etc/caddycerts
+  environment:
+    CADDYPATH: /etc/caddycerts
+    ACME_AGREE: 'true'
